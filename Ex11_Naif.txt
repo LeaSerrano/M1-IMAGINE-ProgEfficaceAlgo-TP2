@@ -1,0 +1,6 @@
+resultat obtenu : 1
+nbr cycles: 214334
+nbr secondes: 6.9337e-05
+nbr millisecondes: 0.069337
+CPI = inf
+IPC = 0

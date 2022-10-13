@@ -1,0 +1,17 @@
+Sans option de compilation
+resultat attendu : 400
+resultat obtenu : 0
+nbr cycles: 255930
+nbr secondes: 8.2823e-05
+nbr millisecondes: 0.082823
+CPI = inf
+IPC = 0
+
+Avec option de compilation
+resultat attendu : 400
+resultat obtenu : 0
+nbr cycles: 333368
+nbr secondes: 0.000107837
+nbr millisecondes: 0.107837
+CPI = inf
+IPC = 0
