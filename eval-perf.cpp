@@ -142,7 +142,7 @@ float Ex9_Horner (float resultat, std::vector<float> P, int x, int i,  int sizeP
     return resultat;
 }//nbCycles ~= 47584 donc ILP ~= 3/47584
 
-double & Ex10_reduce_mult(double* V , double &res, size_t n) {
+/*double & Ex10_reduce_mult(double* V , double &res, size_t n) {
     __m256d x_vec, x_vec_V;
     double* temp = new double[4];
     size_t i = 0;
@@ -151,19 +151,53 @@ double & Ex10_reduce_mult(double* V , double &res, size_t n) {
 
     for (; i < n-3; i+=4) {
         x_vec = _mm256_loadu_pd(V+i);
+        //std::cout << x_vec[3] << " " << x_vec_V[3] << std::endl;
+
         x_vec_V = _mm256_mul_pd (x_vec_V, x_vec);
+        //std::cout << x_vec_V[3] << std::endl;
     }
 
     _mm256_storeu_pd (temp, x_vec_V);
 
     for (int j = 0; j < 4; j++) {
         res *= temp[j];
-        std::cout << temp[j] << std::endl;
     }
 
     for(; i < 4; i++) {
         res *= V[i];
     }
+
+    return res;
+
+}*/
+
+
+double & Ex10_reduce_add(double* V , double& res, size_t n) {
+    __m256d x_vec, x_vec_V, ind, ind2;
+    double* temp = new double[4];
+    size_t i = 0;
+    
+    //for (; i < n-3; i+=4) {
+        x_vec_V = _mm256_loadu_pd(V);
+        x_vec = _mm256_loadu_pd(V);
+
+        _mm256_permute_pd(x_vec,0101);
+        /*std::cout << x_vec_V[0] << " " << x_vec_V[1] << " " << x_vec_V[2] << " " << x_vec_V[3] << " " << std::endl;
+        std::cout << x_vec[0] << " " << x_vec[1] << " " << x_vec[2] << " " << x_vec[3] << " " << std::endl;
+        */
+        ind = _mm256_add_pd(x_vec_V, x_vec);
+        ind2 = ind;
+
+        _mm256_permute4x64_pd(ind2, )
+
+        //std::cout << x_vec_V[0] << " " << x_vec_V[1] << " " << x_vec_V[2] << " " << x_vec_V[3] << " " << std::endl;
+        _mm256_storeu_pd (&res, ind);
+    //}
+
+    /*for(; i < n; i++) {
+        res += V[i];
+        //std::cout << V[i] << std::endl;
+    }*/
 
     return res;
 
@@ -272,13 +306,14 @@ int main() {
 
   //Ex10
   double* V_Ex10 = new double[6];
-  V_Ex10[0] = 1;
-  V_Ex10[1] = 2;
-  V_Ex10[2] = 3;
-  V_Ex10[3] = 4;
-  V_Ex10[4] = 5;
-  V_Ex10[5] = 6;
-  double res_Ex10 = 1.;
+  V_Ex10[0] = 3;//1;
+  V_Ex10[1] = 5;//2;
+  V_Ex10[2] = 1;//3;
+  V_Ex10[3] = 9;//4;
+  V_Ex10[4] = 2;//5;
+  V_Ex10[5] = 8;//6;
+  double res_Ex10_mult = 1.;
+  double res_Ex10_add = 0.;
   size_t n_Ex10 = 6;
 
 
@@ -312,8 +347,9 @@ int main() {
   Ex9_puissances_alpha(resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_1, sizeP_Ex9);
   Ex9_Horner (resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_2, sizeP_Ex9);*/
 
-  double resultat = Ex10_reduce_mult(V_Ex10, res_Ex10, n_Ex10);
-  std::cout << resultat << std::endl;
+  //double resultat1 = Ex10_reduce_mult(V_Ex10, res_Ex10_mul, n_Ex10);
+  double resultat2 = Ex10_reduce_add(V_Ex10, res_Ex10_add, n_Ex10);
+  std::cout << resultat2 << std::endl;
 
   //pour récup un pointeur &(v[0]) ou v.data()
 
