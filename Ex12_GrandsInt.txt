@@ -1,0 +1,7 @@
+resultat obtenu Ex9 : 2.00687e+11
+resultat obtenu Ex12 : 2.00687e+11
+nbr cycles: 711018
+nbr secondes: 0.00029404
+nbr millisecondes: 0.29404
+CPI = inf
+IPC = 0

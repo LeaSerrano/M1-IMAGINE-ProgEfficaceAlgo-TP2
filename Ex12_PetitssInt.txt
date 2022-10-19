@@ -1,0 +1,7 @@
+resultat obtenu Ex9 : 255
+resultat obtenu Ex12 : 255
+nbr cycles: 324553
+nbr secondes: 0.000134276
+nbr millisecondes: 0.134276
+CPI = inf
+IPC = 0

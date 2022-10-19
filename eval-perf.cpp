@@ -315,46 +315,31 @@ float Ex11_Fonction(float* V, size_t n) {
 }
 
 //Essai ex12
-double* Ex12(double* tab, size_t n, double alpha) {
-    __m256d a = _mm256_set1_pd(1);
-    __m256d registre, registreAlpha, registreAdd, resultat;
-    double* r = new double[4];
-    double* rResultat = new double[4];
+float Ex12(double* tab, size_t n, double alpha) {
+    double* resultat = new double[4];
+
+    __m256d coeff, stockMul, stockResult, puiss;
+    stockResult = _mm256_set_pd(0, 0, 0, 0);
+    //coeff = _mm256_loadu_pd(tab);
 
     for (size_t i = 0; i < n-3; i+=4) {
-        registre = _mm256_loadu_pd(tab);
-        registreAlpha = _mm256_add_pd(registre, registreAlpha);
-        registreAlpha = _mm256_mul_pd(registreAlpha, a);
-        a = _mm256_set1_pd(alpha*alpha*alpha*alpha);
+        puiss = _mm256_set_pd(pow(alpha, i), pow(alpha, i), pow(alpha, i), pow(alpha, i));
+
+        coeff = _mm256_loadu_pd(tab+i);
+
+        stockMul = _mm256_mul_pd(puiss, coeff);
+
+        stockResult = _mm256_add_pd(stockMul, stockResult);
+
     }
-    _mm256_storeu_pd(r, registreAlpha);
+    _mm256_storeu_pd(resultat, stockResult);
+    float res = 0;
 
-    for (size_t i = 0; i < n; i++) {
-        registreAdd = _mm256_add_pd(registreAdd, registreAlpha);
-    }
-
-    _mm256_storeu_pd(rResultat, registreAlpha);
-
-    int a2;
     for (size_t i = 0; i < 4; i++) {
-        if (i == 0) {
-            a2 = 1;
-        }
-        else if (i == 1) {
-            a2 = alpha;
-        }
-        else if (i == 2) {
-            a2 = alpha*alpha;
-        }
-        else {
-            a2 = alpha*alpha*alpha;
-        }
-        
-        rResultat[i] = rResultat[i]*a2;
-
+        res += resultat[i]*pow(alpha, i); 
     }
 
-    return rResultat;
+    return res;
 }
 
 
@@ -507,6 +492,36 @@ int main() {
   tab_Ex12_1[7] = 1;
   int x_Ex12_1 = 2;
 
+  std::vector<float> res_test_1(8);
+  res_test_1[0]=1;
+  res_test_1[1]=1;
+  res_test_1[2]=1;
+  res_test_1[3]=1;
+  res_test_1[4]=1;
+  res_test_1[5]=1;
+  res_test_1[6]=1;
+  res_test_1[7]=1;
+
+  double* tab_Ex12_2 = new double[8];
+  tab_Ex12_2[0] = 10;
+  tab_Ex12_2[1] = 30;
+  tab_Ex12_2[2] = 50;
+  tab_Ex12_2[3] = 70;
+  tab_Ex12_2[4] = 90;
+  tab_Ex12_2[5] = 110;
+  tab_Ex12_2[6] = 130;
+  tab_Ex12_2[7] = 150;
+  int x_Ex12_2 = 20;
+
+  std::vector<float> res_test_2(8);
+  res_test_2[0]=10;
+  res_test_2[1]=30;
+  res_test_2[2]=50;
+  res_test_2[3]=70;
+  res_test_2[4]=90;
+  res_test_2[5]=110;
+  res_test_2[6]=130;
+  res_test_2[7]=150;
 
   PE.start();
   
@@ -534,9 +549,11 @@ int main() {
   slowperformance1(X, Y, Z, 10000);
   slowperformance2(X, Y, Z, 10000);
 
-
-  Ex9_puissances_alpha(resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_1, sizeP_Ex9);
-  Ex9_Horner (resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_2, sizeP_Ex9);*/
+*/
+//Ex9_puissances_alpha(resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_1, sizeP_Ex9);
+  float test = Ex9_puissances_alpha(resultat_Ex9, res_test_1, x_Ex12_1, indice_Ex9_1, 8);
+  std::cout << "resultat obtenu Ex9 : " << test << std::endl;
+  //Ex9_Horner (resultat_Ex9, tab_Ex9, x_Ex9, indice_Ex9_2, sizeP_Ex9);*/
 
   //double resultat1 = Ex10_reduce_mult_Qu1(V_Ex10, n_Ex10);
   //double resultat2 = Ex10_reduce_add_Qu1(V_Ex10, n_Ex10);
@@ -546,9 +563,9 @@ int main() {
    float resultat5 = Ex11_Naif(tab_Ex11, n_Ex11);
    float resultat6 = Ex11_Fonction(tab_Ex11, n_Ex11);*/
 
-   /*double* resultat7 = Ex12(tab_Ex12_1,8, x_Ex12_1);
+   float resultat7 = Ex12(tab_Ex12_1, 8, x_Ex12_1);
 
-  std::cout << "resultat obtenu : " << resultat7[0] << std::endl;*/
+  std::cout << "resultat obtenu Ex12 : " << resultat7 << std::endl;
 
   //pour récup un pointeur &(v[0]) ou v.data()
 
